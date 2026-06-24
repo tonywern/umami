@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Модель пивной бутылки</title>
+    
+    <!-- Подключаем библиотеку model-viewer -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js">
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #1a1a2e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        model-viewer {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        model-viewer::part(default-progress-bar) {
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+        }
+        /* Стили для информационной подсказки */
+        .info {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.5);
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            background: rgba(0,0,0,0.4);
+            padding: 8px 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <model-viewer
+        id="viewer"
+        src="https://drive.google.com/uc?export=download&id=1HRio0cbF06cWdK2n6VhhWG0MpqgGiLfb"
+        alt="3D модель пивной бутылки"
+        auto-rotate
+        rotation-per-second="10deg"
+        camera-controls
+        touch-action="pan-y"
+        camera-orbit="30deg 70deg 1.5m"
+        min-camera-orbit="auto auto 0.5m"
+        max-camera-orbit="auto auto 4m"
+        exposure="1.0"
+        shadow-intensity="0.6"
+        shadow-softness="0.5"
+        environment-image="https://modelviewer.dev/shared-assets/environments/venice_sunset_1k.hdr"
+        skybox-image="https://modelviewer.dev/shared-assets/environments/venice_sunset_1k.hdr"
+        style="background-color: #1a1a2e;"
+    >
+        <!-- Кнопка управления автоповоротом -->
+        <button slot="hotspot-1" 
+                style="position:absolute; bottom:80px; left:50%; transform:translateX(-50%);
+                       background:rgba(255,255,255,0.1); color:white; 
+                       border:1px solid rgba(255,255,255,0.2); 
+                       border-radius:30px; padding:10px 24px; 
+                       font-family:Arial; font-size:14px; 
+                       cursor:pointer; backdrop-filter:blur(10px);
+                       transition: all 0.3s ease;"
+                onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+                onmouseout="this.style.background='rgba(255,255,255,0.1)'"
+                onclick="toggleRotation()">
+            ⏸️ Приостановить вращение
+        </button>
+    </model-viewer>
+
+    <div class="info">🖱️ Перетащите для поворота • Прокрутите для приближения</div>
+
+    <script>
+        let isRotating = true;
+        const viewer = document.getElementById('viewer');
+        const btn = document.querySelector('button[slot="hotspot-1"]');
+        
+        window.toggleRotation = function() {
+            isRotating = !isRotating;
+            viewer.autoRotate = isRotating;
+            btn.textContent = isRotating ? '⏸️ Приостановить вращение' : '▶️ Возобновить вращение';
+        };
+
+        // Обработка ошибок загрузки
+        viewer.addEventListener('error', (event) => {
+            console.error('Ошибка загрузки модели:', event.detail);
+            alert('Не удалось загрузить модель. Возможно, файл слишком большой или проблема с доступом.');
+        });
+
+        // Сообщение об успешной загрузке
+        viewer.addEventListener('load', () => {
+            console.log('Модель успешно загружена!');
+        });
+    </script>
+</body>
+</html>
